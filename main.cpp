@@ -154,14 +154,14 @@ void geraCaminhos(){ // gera o caminho de cada formiga
 
             int soma = 0;
             for(int i=0;i<N;i++)
-                soma += probabilidade[k][ordem[i]] * 100;
+                soma += int(probabilidade[k][ordem[i]] * 100);
 
-            int caminho = 0, cont = 0, valor = rand() % soma;
+            int caminho = 0, cont = 0, valor = soma ? (rand() % soma) : 0;
             while(cont < valor){
                 cont += int(probabilidade[k][ordem[caminho]] * 100);
                 caminho++;
             }
-            if(cont > valor)
+            if(cont > valor && caminho > 0)
                 caminho--;
 
             posicao[k] = ordem[caminho]; // nova posicao da formiga
@@ -231,9 +231,10 @@ int main(){
 
     // inicializa a quantidade de feromonio de cada aresta
     LMelhorPercurso = inf;
+    melhorPercurso.push_back(0);
     for(int i=0;i<N;i++)
         for(int j=0;j<N;j++)
-            feromonio[i][j] = tau / (N*N);
+            feromonio[i][j] = tau / (N*30000.0);
 
     int rep = 0;
     int estagnado = 0;
@@ -244,19 +245,21 @@ int main(){
         geraCaminhos();
         geraFeromonio();
 
-        estagnado = mudou ? 0 : (estagnado+1);
+       estagnado = mudou ? 0 : (estagnado+1);
 
-        // printf("%d) Melhor solucao encontrada: \n[", rep, melhorPercurso[0]);
-        // for(int i=0;i<melhorPercurso.size();i++)
-        //     printf("%d -> ", melhorPercurso[i]);
-        // printf("%d]\nComprimento: %.4lf\n\n", melhorPercurso[0], LMelhorPercurso);
+ //       printf("%d) Melhor solucao encontrada: \n %.4lf", rep, melhorPercurso[0], LMelhorPercurso);
+ //       // for(int i=0;i<melhorPercurso.size();i++)
+ //       //     printf("%d -> ", melhorPercurso[i]);
+ //       // printf("%d]\nComprimento: %.4lf\n\n", melhorPercurso[0], LMelhorPercurso);
 
     } while(rep < MAXITERACOES && estagnado < MAXESTAGNADO);
 
-    printf("Melhor solucao encontrada: \n[", melhorPercurso[0]);
+    printf("Melhor solucao encontrada: \n[%d ", melhorPercurso[0]);
     for(int i=0;i<melhorPercurso.size();i++)
-        printf("%d -> ", melhorPercurso[i]);
-    printf("%d]\n\nComprimento: %.4lf\n", melhorPercurso[0], LMelhorPercurso);
+       printf("%d -> ", melhorPercurso[i]);
+    printf("%d]\n", melhorPercurso[0]);
+    
+    printf("\nComprimento: %.4lf\n", LMelhorPercurso);
 
     return 0;
 }
