@@ -1,10 +1,17 @@
 #include <bits/stdc++.h>
 
-#define MAXN 50
+#define MAXN 50 // quantidade maxima de vertices
 #define alpha 1 // taxa de importancia da trilha de feromonio
 #define beta 1  // taxa de importancia da heuristica local
 #define ro 1    // taxa de evaporacao
+#define tau 1   // quantidade de feromonio inicial em cd aresta
 #define Q 1     // quantidade de feromonio depositado por cd formiga a cd iteracao
+
+#define verbose 0
+
+#define x first
+#define y second
+#define inf 0x3f3f3f3f
 
 using namespace std;
 
@@ -15,8 +22,69 @@ double probabilidade[MAXN][MAXN];   // probabilidade da formiga i ir pra cidade 
 double feromonio[MAXN][MAXN];       // quantidade de feromonio na estrada (i, j)
 double dferomonio[MAXN][MAXN];      // delta feromonio -> variacao do feromonio na estrada (i, j)
 double distancia[MAXN][MAXN];       // distancia entre as cidades (i, j)
+double avaliacao[MAXN];             // avaliacao do melhor caminho da formiga i
 
 vector<int> percurso[MAXN];         // percurso de cada formiga
+
+pair<double, double> v[MAXN];       // posicao de cada vertice, caso a entrada seja feita por coordenadas
+
+// so pra garantir q a matriz de distancias eh consistente: o caminho de i ate j eh sempre o menor, independente se eh direto ou nao
+void floydWarshall(){
+    for (int k=0;k<N;k++)
+        for (int i=0;i<N;i++) 
+          for (int j=0;j<N;j++)
+            if (distancia[i][k] + distancia[k][j] < distancia[i][j])
+                distancia[i][j] = distancia[i][k] + distancia[k][j];
+}
+
+double dist(pair<double, double> a, pair<double, double> b){
+    return sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
+}
+
+bool leEntrada(){
+    int tipo;
+
+    if(verbose){
+        printf(" -------------------------------------------------------------- \n");
+        printf("| Opcoes:                                                      |\n");
+        printf("| 1) Fornecer as coordenadas (x, y) das cidades                |\n");
+        printf("| 2) Fornecer o valor das distancias entre cada par de cidades |\n");
+        printf(" -------------------------------------------------------------- \n");
+        printf("\nEscolha uma opcao: ");
+    }
+    scanf("%d", &tipo);
+
+    if(verbose)
+        printf("Digite a quantidade de vertices: ");
+
+    scanf("%d", &N);
+
+    if(tipo == 1){
+        for(int i=0;i<N;i++){
+            if(verbose) 
+                printf("Digite as coordenadas (x,y) da cidade %d, separadas por espaco: ", i);
+
+            scanf("%lf %lf", &v[i].x, &v[i].y);
+            for(int j=0;j<i;j++)
+                distancia[i][j] = distancia[j][i] = dist(v[i], v[j]);
+            distancia[i][i] = 0;
+        }
+        return 1;
+    }
+    else if(tipo == 2){
+        for(int i=0;i<N;i++){
+            for(int j=i+1;j<N;j++){
+                if(verbose)
+                    printf("Digite a distancia entre as cidades %d e %d\n", i, j);
+                scanf("%lf", &distancia[i][j]);
+                distancia[j][i] = distancia[i][j];
+            }
+            distancia[i][i] = 0;
+        }
+        return 1;
+    }
+    return 0;
+}
 
 /*
     CALCULO DAS PROBABILIDADES:
@@ -101,4 +169,20 @@ void geraFeromonio(){ // atualiza a matriz de quantidade de feromonio em cada ca
 
 main(){
     srand(time(NULL));
+
+    if(!leEntrada()){
+        if(verbose)
+            printf("Falha na leitura da entrada, o programa sera finalizado\n");
+        return 0;
+    }
+
+    floydWarshall();
+
+    for(int i=0;i<N;i++){
+        for(int j=0;j<N;j++){
+            dferomonio[i][j] = 0;
+            feromonio[i][j] = tau;
+        }
+        avaliacao[i] = inf;
+    }
 }
