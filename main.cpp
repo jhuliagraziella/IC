@@ -1,16 +1,16 @@
 #include <bits/stdc++.h>
 
-#define MAXN 50         // quantidade maxima de vertices
-#define MAXITERACOES 50 // quantidade maxima de iteracoes
-#define MAXESTAGNADO 5  // quantdade de iteracoes "repetidas" suficientes para se considerar que estagnou na solucao
+#define MAXN 4000        // quantidade maxima de vertices
+#define MAXITERACOES 100 // quantidade maxima de iteracoes
+#define MAXESTAGNADO 50  // quantdade de iteracoes "repetidas" suficientes para se considerar que estagnou na solucao
 
-#define alpha 1         // taxa de importancia da trilha de feromonio
-#define beta 1          // taxa de importancia da heuristica local
-#define ro 1            // taxa de evaporacao
-#define tau 1           // quantidade de feromonio inicial em cd aresta
-#define Q 1             // quantidade de feromonio depositado por cd formiga a cd iteracao
+#define alpha 1          // taxa de importancia da trilha de feromonio
+#define beta 5           // taxa de importancia da heuristica local
+#define ro 0.5           // taxa de evaporacao
+#define tau 1.0          // quantidade de feromonio inicial em cd aresta
+#define Q 1              // quantidade de feromonio depositado por cd formiga a cd iteracao
 
-#define verbose 0       // define se vao ser impressas msgs auxiliares ou nao
+#define verbose 0        // define se vao ser impressas msgs auxiliares ou nao
 
 #define x first
 #define y second
@@ -27,6 +27,7 @@ double probabilidade[MAXN][MAXN];   // probabilidade da formiga i ir pra cidade 
 double feromonio[MAXN][MAXN];       // quantidade de feromonio na estrada (i, j)
 double dferomonio[MAXN][MAXN];      // delta feromonio -> variacao do feromonio na estrada (i, j)
 double distancia[MAXN][MAXN];       // distancia entre as cidades (i, j)
+bool pertence[MAXN][MAXN];          // marca se a aresta (i, j) pertence ao melhor percurso (pra ver onde deposita feromonio)
 
 vector<int> percurso[MAXN];         // percurso de cada formiga
 
@@ -34,6 +35,9 @@ double LMelhorPercurso;             // comprimento do melhor percurso
 vector<int> melhorPercurso;         // melhor percurso encontrado ate agora
 
 pair<double, double> v[MAXN];       // posicao de cada vertice, caso a entrada seja feita por coordenadas
+
+int aux;                            // variavel auxiliar na aplicacao da roleta
+int ordem[MAXN];                    // vetor auxiliar na aplicacao da roleta
 
 // so pra garantir q a matriz de distancias eh consistente: o caminho de i ate j eh sempre o menor, independente se eh direto ou nao
 void floydWarshall(){
@@ -70,10 +74,12 @@ bool leEntrada(){
             if(verbose) 
                 printf("Digite as coordenadas (x,y) da cidade %d, separadas por espaco: ", i);
 
+            // int lixo;
+            // scanf("%d", &lixo);
+
             scanf("%lf %lf", &v[i].x, &v[i].y);
             for(int j=0;j<i;j++)
                 distancia[i][j] = distancia[j][i] = dist(v[i], v[j]);
-            distancia[i][i] = 0;
         }
         return 1;
     }
@@ -89,7 +95,6 @@ bool leEntrada(){
                 scanf("%lf", &distancia[i][j]);
                 distancia[j][i] = distancia[i][j];
             }
-            distancia[i][i] = 0;
         }
         return 1;
     }
@@ -105,44 +110,62 @@ bool leEntrada(){
     alpha e beta sao parametros do algoritmo
     denominador: somatorio da formula de tds as cidades
 */
-
 void geraProbabilidades(){  // atualiza a matriz de probabilidades das movimentacoes das formigas
     for(int k=0;k<N;k++){   // k eh a formiga q estamos analisando
         int i = posicao[k];
 
-        double denominador = 0;
+        // obs: somando 1 pra impedir denominador = 0
+        double denominador = 0; 
         for(int l=0;l<N;l++)
-            denominador += vis[k][l] ? 0 : (pow(feromonio[i][l], alpha) / pow(distancia[i][l], beta));
-
+            if(i != l)
+                denominador += vis[k][l] ? 0 : (1 + pow(feromonio[i][l], alpha) / pow(distancia[i][l]+1, beta));
+    
         for(int j=0;j<N;j++)
-            probabilidade[k][j] = vis[k][j] ? 0 : ((pow(feromonio[i][j], alpha) / pow(distancia[i][j], beta)) / denominador);
+            if(i != j)
+                probabilidade[k][j] = vis[k][j] ? 0 : ((1 + pow(feromonio[i][j], alpha) / pow(distancia[i][j]+1, beta)) / denominador);
+        probabilidade[k][i] = 0;
     }
     return;
 }
 
-// => eh usada roleta sobre a matriz de probabilidades pra definir aonde q a da formiga vai
+bool compara(int a, int b){
+    return probabilidade[aux][a] > probabilidade[aux][b];
+}
 
 void geraCaminhos(){ // gera o caminho de cada formiga
-    for(int i=0;i<N;i++){ // nenhuma formiga visitou nenhum lugar
-        for(int j=0;j<N;j++)
-            vis[i][j] = 0;
-
-        posicao[i] = rand() % N; // posicao inicial de cada formiga eh aleatoria
+    for(int i=0;i<N;i++){                // a posicao inicial de cada formiga eh aleatoria
+        posicao[i] = rand() % N; 
         percurso[i].clear();
         percurso[i].push_back(posicao[i]);
+        ordem[i] = i;
+
+        for(int j=0;j<N;j++)
+            vis[i][j] = 0;
     }
 
-    for(int passo=1;passo<N;passo++){ // quantidade de arestas do caminho
+    for(int passo=1;passo<N;passo++){    // quantidade de arestas do caminho
         geraProbabilidades();
 
         for(int k=0;k<N;k++){
-            int caminho;
+            vis[k][posicao[k]] = true;   // marca aonde a formiga ja esteve
 
-            // pra cada formiga k, tem q aplicar o metodo da roleta pra descobrir qual caminho q ela vai seguir
-            // preciso de uma estrutura de dado melhor do q uma matriz de probabilidade pra poder fazer isso aqui,
-            // mas n eh mto dificil de alterar
-        
-            percurso[k].push_back(caminho);
+            aux = k;                     // qual formiga to usando de base agr
+            sort(ordem, ordem+N, compara);
+
+            int soma = 0;
+            for(int i=0;i<N;i++)
+                soma += probabilidade[k][ordem[i]] * 100;
+
+            int caminho = 0, cont = 0, valor = rand() % soma;
+            while(cont < valor){
+                cont += int(probabilidade[k][ordem[caminho]] * 100);
+                caminho++;
+            }
+            if(cont > valor)
+                caminho--;
+
+            posicao[k] = ordem[caminho]; // nova posicao da formiga
+            percurso[k].push_back(posicao[k]);
         }
     }
 }
@@ -156,7 +179,6 @@ void geraCaminhos(){ // gera o caminho de cada formiga
     dferomonio_ij = somatorio pra cada formiga k de: (i,j) pertence ao caminho da formiga k ? f(percurso_k) : 0;
     feromonio_ij = (1.0-ro) * feromonio_ij + dferomonio_ij;
 */
-
 void geraFeromonio(){ // atualiza a matriz de quantidade de feromonio em cada caminho (i,j)
     for(int i=0;i<N;i++)    // zera o delta do feromonio
         for(int j=0;j<N;j++)
@@ -168,13 +190,20 @@ void geraFeromonio(){ // atualiza a matriz de quantidade de feromonio em cada ca
             L += distancia[percurso[k][i]][percurso[k][(i+1) % percurso[k].size()]];
 
         if(L < LMelhorPercurso){
+            for(int i=0;i<melhorPercurso.size();i++)
+                pertence[melhorPercurso[i]][melhorPercurso[(i+1) % melhorPercurso.size()]] = false;
+
             mudou = true;
             LMelhorPercurso = L;
             melhorPercurso = percurso[k];
+
+            for(int i=0;i<percurso[k].size();i++)
+                pertence[percurso[k][i]][percurso[k][(i+1) % percurso[k].size()]] = true;            
         }
 
         for(int i=0;i<percurso[k].size();i++)
-            dferomonio[percurso[k][i]][percurso[k][(i+1) % percurso[k].size()]] += Q / L;
+            if(pertence[percurso[k][i]][percurso[k][(i+1) % percurso[k].size()]])
+                dferomonio[percurso[k][i]][percurso[k][(i+1) % percurso[k].size()]] += Q / L;
     }
 
     for(int i=0;i<N;i++)    // calcula a matriz de feromonio (aplica a variacao)
@@ -192,16 +221,19 @@ int main(){
         return 0;
     }
 
-    floydWarshall();
+    // floydWarshall();
 
-    // inicializa os parametros do algoritmo
+    // for(int i=0;i<N;i++){
+    //     for(int j=i+1;j<N;j++)
+    //         printf("%.4lf ", distancia[i][j]);
+    //     printf("\n");
+    // }
+
+    // inicializa a quantidade de feromonio de cada aresta
     LMelhorPercurso = inf;
-    for(int i=0;i<N;i++){
-        for(int j=0;j<N;j++){
-            dferomonio[i][j] = 0;
-            feromonio[i][j] = tau;
-        }
-    }
+    for(int i=0;i<N;i++)
+        for(int j=0;j<N;j++)
+            feromonio[i][j] = tau / (N*N);
 
     int rep = 0;
     int estagnado = 0;
@@ -214,13 +246,17 @@ int main(){
 
         estagnado = mudou ? 0 : (estagnado+1);
 
+        // printf("%d) Melhor solucao encontrada: \n[", rep, melhorPercurso[0]);
+        // for(int i=0;i<melhorPercurso.size();i++)
+        //     printf("%d -> ", melhorPercurso[i]);
+        // printf("%d]\nComprimento: %.4lf\n\n", melhorPercurso[0], LMelhorPercurso);
+
     } while(rep < MAXITERACOES && estagnado < MAXESTAGNADO);
 
-    printf("Melhor solucao encontrada: [%d \n", melhorPercurso[0]);
-
-    for(int i=1;i<melhorPercurso.size();i++)
-        printf(" -> %d", melhorPercurso[i]);
-    printf("]\nComprimento: %.4lf\n", LMelhorPercurso);
+    printf("Melhor solucao encontrada: \n[", melhorPercurso[0]);
+    for(int i=0;i<melhorPercurso.size();i++)
+        printf("%d -> ", melhorPercurso[i]);
+    printf("%d]\n\nComprimento: %.4lf\n", melhorPercurso[0], LMelhorPercurso);
 
     return 0;
 }
