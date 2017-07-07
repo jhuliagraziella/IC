@@ -6,6 +6,8 @@
 #define ro 1    // taxa de evaporacao
 #define Q 1     // quantidade de feromonio depositado por cd formiga a cd iteracao
 
+using namespace std;
+
 int N;
 bool vis[MAXN][MAXN];               // vetor de visitados: se a formiga i visitou a cidade j
 int posicao[MAXN];                  // onde a formiga i esta
@@ -13,6 +15,8 @@ double probabilidade[MAXN][MAXN];   // probabilidade da formiga i ir pra cidade 
 double feromonio[MAXN][MAXN];       // quantidade de feromonio na estrada (i, j)
 double dferomonio[MAXN][MAXN];      // delta feromonio -> variacao do feromonio na estrada (i, j)
 double distancia[MAXN][MAXN];       // distancia entre as cidades (i, j)
+
+vector<int> percurso[MAXN];         // percurso de cada formiga
 
 /*
     CALCULO DAS PROBABILIDADES:
@@ -38,10 +42,31 @@ void geraProbabilidades(){  // atualiza a matriz de probabilidades das movimenta
     return;
 }
 
-// => eh usada roleta sobre a matriz de probabilidades pra definir aonde q a porra da formiga vai
+// => eh usada roleta sobre a matriz de probabilidades pra definir aonde q a da formiga vai
 
-void geraCaminhos(){ // gera o caminho de cada porra de formiga
+void geraCaminhos(){ // gera o caminho de cada formiga
+    for(int i=0;i<N;i++){ // nenhuma formiga visitou nenhum lugar
+        for(int j=0;j<N;j++)
+            vis[i][j] = 0;
 
+        posicao[i] = rand() % N; // posicao inicial de cada formiga eh aleatoria
+        percurso[i].clear();
+        percurso[i].push_back(posicao[i]);
+    }
+
+    for(int passo=1;passo<N;passo++){ // quantidade de arestas do caminho
+        geraProbabilidades();
+
+        for(int k=0;k<N;k++){
+            int caminho;
+
+            // pra cada formiga k, tem q aplicar o metodo da roleta pra descobrir qual caminho q ela vai seguir
+            // preciso de uma estrutura de dado melhor do q uma matriz de probabilidade pra poder fazer isso aqui,
+            // mas n eh mto dificil de alterar
+        
+            percurso[k].push_back(caminho);
+        }
+    }
 }
 
 /*
@@ -75,5 +100,5 @@ void geraFeromonio(){ // atualiza a matriz de quantidade de feromonio em cada ca
 }
 
 main(){
-
-}   
+    srand(time(NULL));
+}
