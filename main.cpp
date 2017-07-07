@@ -4,12 +4,14 @@
 #define alpha 1 // taxa de importancia da trilha de feromonio
 #define beta 1  // taxa de importancia da heuristica local
 #define ro 1    // taxa de evaporacao
+#define Q 1     // quantidade de feromonio depositado por cd formiga a cd iteracao
 
 int N;
 bool vis[MAXN][MAXN];               // vetor de visitados: se a formiga i visitou a cidade j
 int posicao[MAXN];                  // onde a formiga i esta
 double probabilidade[MAXN][MAXN];   // probabilidade da formiga i ir pra cidade j
 double feromonio[MAXN][MAXN];       // quantidade de feromonio na estrada (i, j)
+double dferomonio[MAXN][MAXN];      // delta feromonio -> variacao do feromonio na estrada (i, j)
 double distancia[MAXN][MAXN];       // distancia entre as cidades (i, j)
 
 /*
@@ -53,9 +55,25 @@ void geraCaminhos(){ // gera o caminho de cada porra de formiga
 */
 
 void geraFeromonio(){ // atualiza a matriz de quantidade de feromonio em cada caminho (i,j)
+    for(int i=0;i<N;i++)    // zera o delta do feromonio
+        for(int j=0;j<N;j++)
+            dferomonio[i][j] = 0;
 
+    for(int k=0;k<N;k++){   // calcula o delta do feromonio
+        double L = 0;       // comprimento do percurso da formiga k;
+        for(int i=0;i<percurso[k].size();i++)
+            L += distancia[percurso[k][i]][percurso[k][(i+1) % percurso[k].size()]];
+
+        for(int i=0;i<percurso[k].size();i++)
+            dferomonio[percurso[k][i]][percurso[k][(i+1) % percurso[k].size()]] += Q / L;
+    }
+
+    for(int i=0;i<N;i++)    // calcula a matriz de feromonio (aplica a variacao)
+        for(int j=0;j<N;j++)
+            feromonio[i][j] = (1.0-ro) * feromonio[i][j] + dferomonio[i][j];
+    return;
 }
 
 main(){
 
-}
+}   
