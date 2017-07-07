@@ -1,13 +1,16 @@
 #include <bits/stdc++.h>
 
-#define MAXN 50 // quantidade maxima de vertices
-#define alpha 1 // taxa de importancia da trilha de feromonio
-#define beta 1  // taxa de importancia da heuristica local
-#define ro 1    // taxa de evaporacao
-#define tau 1   // quantidade de feromonio inicial em cd aresta
-#define Q 1     // quantidade de feromonio depositado por cd formiga a cd iteracao
+#define MAXN 50         // quantidade maxima de vertices
+#define MAXITERACOES 50 // quantidade maxima de iteracoes
+#define MAXESTAGNADO 5  // quantdade de iteracoes "repetidas" suficientes para se considerar que estagnou na solucao
 
-#define verbose 0
+#define alpha 1         // taxa de importancia da trilha de feromonio
+#define beta 1          // taxa de importancia da heuristica local
+#define ro 1            // taxa de evaporacao
+#define tau 1           // quantidade de feromonio inicial em cd aresta
+#define Q 1             // quantidade de feromonio depositado por cd formiga a cd iteracao
+
+#define verbose 0       // define se vao ser impressas msgs auxiliares ou nao
 
 #define x first
 #define y second
@@ -16,15 +19,19 @@
 using namespace std;
 
 int N;
+bool mudou;
+
 bool vis[MAXN][MAXN];               // vetor de visitados: se a formiga i visitou a cidade j
 int posicao[MAXN];                  // onde a formiga i esta
 double probabilidade[MAXN][MAXN];   // probabilidade da formiga i ir pra cidade j
 double feromonio[MAXN][MAXN];       // quantidade de feromonio na estrada (i, j)
 double dferomonio[MAXN][MAXN];      // delta feromonio -> variacao do feromonio na estrada (i, j)
 double distancia[MAXN][MAXN];       // distancia entre as cidades (i, j)
-double avaliacao[MAXN];             // avaliacao do melhor caminho da formiga i
 
 vector<int> percurso[MAXN];         // percurso de cada formiga
+
+double LMelhorPercurso;             // comprimento do melhor percurso
+vector<int> melhorPercurso;         // melhor percurso encontrado ate agora
 
 pair<double, double> v[MAXN];       // posicao de cada vertice, caso a entrada seja feita por coordenadas
 
@@ -42,8 +49,6 @@ double dist(pair<double, double> a, pair<double, double> b){
 }
 
 bool leEntrada(){
-    int tipo;
-
     if(verbose){
         printf(" -------------------------------------------------------------- \n");
         printf("| Opcoes:                                                      |\n");
@@ -52,14 +57,15 @@ bool leEntrada(){
         printf(" -------------------------------------------------------------- \n");
         printf("\nEscolha uma opcao: ");
     }
+
+    int tipo;
     scanf("%d", &tipo);
 
-    if(verbose)
-        printf("Digite a quantidade de vertices: ");
-
-    scanf("%d", &N);
-
     if(tipo == 1){
+        if(verbose)
+            printf("Digite a quantidade de vertices: ");
+        scanf("%d", &N);
+
         for(int i=0;i<N;i++){
             if(verbose) 
                 printf("Digite as coordenadas (x,y) da cidade %d, separadas por espaco: ", i);
@@ -72,6 +78,10 @@ bool leEntrada(){
         return 1;
     }
     else if(tipo == 2){
+        if(verbose)
+            printf("Digite a quantidade de vertices: ");
+        scanf("%d", &N);
+
         for(int i=0;i<N;i++){
             for(int j=i+1;j<N;j++){
                 if(verbose)
@@ -157,6 +167,12 @@ void geraFeromonio(){ // atualiza a matriz de quantidade de feromonio em cada ca
         for(int i=0;i<percurso[k].size();i++)
             L += distancia[percurso[k][i]][percurso[k][(i+1) % percurso[k].size()]];
 
+        if(L < LMelhorPercurso){
+            mudou = true;
+            LMelhorPercurso = L;
+            melhorPercurso = percurso[k];
+        }
+
         for(int i=0;i<percurso[k].size();i++)
             dferomonio[percurso[k][i]][percurso[k][(i+1) % percurso[k].size()]] += Q / L;
     }
@@ -167,22 +183,44 @@ void geraFeromonio(){ // atualiza a matriz de quantidade de feromonio em cada ca
     return;
 }
 
-main(){
+int main(){
     srand(time(NULL));
 
     if(!leEntrada()){
         if(verbose)
-            printf("Falha na leitura da entrada, o programa sera finalizado\n");
+            printf("Falha na leitura da entrada, o programa sera finalizado.\n");
         return 0;
     }
 
     floydWarshall();
 
+    // inicializa os parametros do algoritmo
+    LMelhorPercurso = inf;
     for(int i=0;i<N;i++){
         for(int j=0;j<N;j++){
             dferomonio[i][j] = 0;
             feromonio[i][j] = tau;
         }
-        avaliacao[i] = inf;
     }
+
+    int rep = 0;
+    int estagnado = 0;
+    do{
+        rep++;
+
+        mudou = false;
+        geraCaminhos();
+        geraFeromonio();
+
+        estagnado = mudou ? 0 : (estagnado+1);
+
+    } while(rep < MAXITERACOES && estagnado < MAXESTAGNADO);
+
+    printf("Melhor solucao encontrada: [%d \n", melhorPercurso[0]);
+
+    for(int i=1;i<melhorPercurso.size();i++)
+        printf(" -> %d", melhorPercurso[i]);
+    printf("]\nComprimento: %.4lf\n", LMelhorPercurso);
+
+    return 0;
 }
