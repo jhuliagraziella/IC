@@ -1,3 +1,7 @@
+/* 
+  Calcula o menor percurso TSP em O(n!), usado pra conferir os testes do ACO
+*/
+
 #include <bits/stdc++.h>
 
 #define eps 1e-9
