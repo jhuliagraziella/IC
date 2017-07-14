@@ -1,0 +1,238 @@
+SIGNIFICADO DOS PARÂMETROS:
+
+M1 = mutacao 10% 
+M2 = mutacao 20%
+S1 = selecao roleta
+S2 = selecao torneio
+R1 = reinsercao com 10% de elitismo
+R2 = reinsercao ordenada 
+A1 = funcao de avaliacao padrao (primeiro+segundo-terceiro)
+A2 = funcao de avaliacao modificada (soma das diferencas digito a digito)
+
+
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+RESULTADOS DOS TESTES:
+
+1) SEND+MORE=MONEY
+
+A1 x M1 x S1 x R1 = 73.80%  9s
+A1 x M1 x S1 x R2 = 57.10% 13s
+A1 x M1 x S2 x R1 = 46.40% 20s
+A1 x M1 x S2 x R2 = 45.30% 23s
+A1 x M2 x S1 x R1 = 88.10%  8s
+A1 x M2 x S1 x R2 = 65.40% 12s
+A1 x M2 x S2 x R1 = 57.30% 18s
+A1 x M2 x S2 x R2 = 54.50% 20s
+A2 x M1 x S1 x R1 = 37.80% 17s
+A2 x M1 x S1 x R2 = 34.50% 19s
+A2 x M1 x S2 x R1 = 28.60% 31s
+A2 x M1 x S2 x R2 = 26.40% 37s
+A2 x M2 x S1 x R1 = 49.00% 18s
+A2 x M2 x S1 x R2 = 36.70% 20s
+A2 x M2 x S2 x R1 = 30.40% 30s
+A2 x M2 x S2 x R2 = 31.20% 32s
+
+---------------------------------------------------------------------------------------------------------
+2) EAT+THAT=APPLE
+
+A1 x M1 x S1 x R1 = 14.00% 20s
+A1 x M1 x S1 x R2 =  7.60% 26s
+A1 x M1 x S2 x R1 =  4.80% 37s
+A1 x M1 x S2 x R2 =  4.40% 39s
+A1 x M2 x S1 x R1 = 23.00% 20s
+A1 x M2 x S1 x R2 =  8.10% 25s
+A1 x M2 x S2 x R1 =  6.10% 37s
+A1 x M2 x S2 x R2 =  6.60% 38s
+A2 x M1 x S1 x R1 = 11.60% 23s
+A2 x M1 x S1 x R2 =  8.30% 26s
+A2 x M1 x S2 x R1 =  7.70% 37s
+A2 x M1 x S2 x R2 =  7.90% 43s
+A2 x M2 x S1 x R1 = 14.20% 22s
+A2 x M2 x S1 x R2 = 10.40% 25s
+A2 x M2 x S2 x R1 =  9.60% 37s
+A2 x M2 x S2 x R2 =  9.50% 42s
+
+---------------------------------------------------------------------------------------------------------
+3) CROSS+ROADS=DANGER
+
+> Utilizando a função de avaliação A1 a taxa de convergência tende a 0%, tempo de execução tende à execução completa = ~209s.
+
+A2 x M1 x S1 x R1 = 11.50% 23s
+A2 x M1 x S1 x R2 =  8.30% 27s
+A2 x M1 x S2 x R1 =  9.80% 36s
+A2 x M1 x S2 x R2 =  6.90% 39s
+A2 x M2 x S1 x R1 = 18.30% 20s
+A2 x M2 x S1 x R2 = 11.90% 24s
+A2 x M2 x S2 x R1 =  9.90% 36s
+A2 x M2 x S2 x R2 =  9.40% 39s
+
+---------------------------------------------------------------------------------------------------------
+4) COCA+COLA=OASIS
+
+A1 x M1 x S1 x R1 =  6.80% 21s
+A1 x M1 x S1 x R2 =  4.10% 26s
+A1 x M1 x S2 x R1 =  4.50% 37s
+A1 x M1 x S2 x R2 =  4.60% 40s
+A1 x M2 x S1 x R1 =  8.30% 23s
+A1 x M2 x S1 x R2 =  6.50% 27s
+A1 x M2 x S2 x R1 =  5.00% 37s
+A1 x M2 x S2 x R2 =  5.20% 39s
+A2 x M1 x S1 x R1 = 13.90% 21s
+A2 x M1 x S1 x R2 =  7.80% 24s
+A2 x M1 x S2 x R1 =  5.10% 37s
+A2 x M1 x S2 x R2 =  5.00% 39s
+A2 x M2 x S1 x R1 = 24.40% 20s
+A2 x M2 x S1 x R2 = 11.30% 24s
+A2 x M2 x S2 x R1 =  7.80% 37s
+A2 x M2 x S2 x R2 =  7.70% 41s
+
+---------------------------------------------------------------------------------------------------------
+5) DONALD+GERALD=ROBERT
+
+> Utilizando a função de avaliação A1 a taxa de convergência tende a 0%, tempo de execução tende à execução completa = ~209s.
+
+A2 x M1 x S1 x R1 = 5.20% 23s
+A2 x M1 x S1 x R2 = 5.50% 25s
+A2 x M1 x S2 x R1 = 3.90% 39s
+A2 x M1 x S2 x R2 = 4.60% 40s
+A2 x M2 x S1 x R1 = 7.00% 22s
+A2 x M2 x S1 x R2 = 6.70% 25s
+A2 x M2 x S2 x R1 = 3.50% 35s
+A2 x M2 x S2 x R2 = 4.50% 40s
+
+
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+ANÁLISE:
+
+A função de avaliação padrão pode gerar resultados muito drásticos: muitas vezes uma combinação único dígito errado, caso esteja posicionado na posição mais significativa, gera uma avaliação pior do que outra com todos os dígitos incorretos. A função de avaliação que avalia dígito a dígito é melhor nesse sentido.
+
+
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+DESCRIÇÃO DAS FUNÇÕES DE AVALIAÇÃO UTILIZADAS:
+
+1) SEND+MORE=MONEY
+
+// 0 1 2 3 4 5 6 7
+// s e n d m o r y _ _
+
+int fitness(Individuo a){
+  int send = a.v[0]*1000 + a.v[1]*100 + a.v[2]*10 + a.v[3];
+  int more = a.v[4]*1000 + a.v[5]*100 + a.v[6]*10 + a.v[1];
+  int money = a.v[4]*10000 + a.v[5]*1000 + a.v[2]*100 + a.v[1]*10 + a.v[7];
+
+  return abs(send+more-money);
+}
+
+int fitness(Individuo a){
+    int carry = 0;
+    int d1 = abs(a.v[3] + a.v[1] + carry); carry = d1/10; d1 %= 10;
+    int d2 = abs(a.v[2] + a.v[6] + carry); carry = d2/10; d2 %= 10;
+    int d3 = abs(a.v[1] + a.v[0] + carry); carry = d3/10; d3 %= 10;
+    int d4 = abs(a.v[0] + a.v[4] + carry); carry = d4/10; d4 %= 10;
+    int d5 = carry;
+
+    return abs(a.v[4]-d5) + abs(a.v[5]-d4) + abs(a.v[2]-d3) + abs(a.v[1]-d2) + abs(a.v[7]-d1);
+}
+
+---------------------------------------------------------------------------------------------------------
+2) EAT+THAT=APPLE
+
+// 0 1 2 3 4 5 6 7 8 9
+// e a t h p l _ _ _ _
+
+int fitness(Individuo a){
+  int eat = a.v[0]*100 + a.v[1]*10 + a.v[2];
+  int that = a.v[2]*1000 + a.v[3]*100 + a.v[1]*10 + a.v[2];
+  int apple = a.v[1]*10000 + a.v[4]*1000 + a.v[4]*100 + a.v[5]*10 + a.v[0];
+  return abs(eat+that-apple);
+}
+
+int fitness(Individuo a){
+    int carry = 0;
+    int d1 = abs(a.v[2] + a.v[2] + carry); carry = d1/10; d1 %= 10;
+    int d2 = abs(a.v[1] + a.v[1] + carry); carry = d2/10; d2 %= 10;
+    int d3 = abs(a.v[0] + a.v[3] + carry); carry = d3/10; d3 %= 10;
+    int d4 = abs(         a.v[2] + carry); carry = d4/10; d4 %= 10;
+    int d5 = carry;
+
+    return abs(a.v[1]-d5) + abs(a.v[4]-d4) + abs(a.v[4]-d3) + abs(a.v[5]-d2) + abs(a.v[0]-d1);
+}
+
+---------------------------------------------------------------------------------------------------------
+3) CROSS+ROADS=DANGER
+
+// 0 1 2 3 4 5 6 7 8 9
+// c r o s r a d n g e
+
+int fitness(Individuo a){
+  int cross = a.v[0]*10000 + a.v[1]*1000 + a.v[2]*100 + a.v[3]*10 + a.v[4];
+  int roads = a.v[1]*10000 + a.v[2]*1000 + a.v[5]*100 + a.v[6]*10 + a.v[3];
+  int danger = a.v[6]*100000 + a.v[5]*10000 + a.v[7]*1000 + a.v[8]*100 + a.v[9]*10 + a.v[4];
+  return abs(cross+roads-danger);
+}
+
+int fitness(Individuo a){
+    int carry = 0;
+    int d1 = abs(a.v[3] + a.v[3] + carry); carry = d1/10; d1 %= 10;
+    int d2 = abs(a.v[3] + a.v[6] + carry); carry = d2/10; d2 %= 10;
+    int d3 = abs(a.v[2] + a.v[5] + carry); carry = d3/10; d3 %= 10;
+    int d4 = abs(a.v[1] + a.v[2] + carry); carry = d4/10; d4 %= 10;
+    int d5 = abs(a.v[0] + a.v[4] + carry); carry = d5/10; d5 %= 10;
+    int d6 = carry;
+
+    return abs(a.v[6]-d6) + abs(a.v[5]-d5) + abs(a.v[7]-d4) + abs(a.v[8]-d3) + abs(a.v[9]-d2) + abs(a.v[4]-d1);
+}
+
+---------------------------------------------------------------------------------------------------------
+4) COCA+COLA=OASIS
+
+// 0 1 2 3 4 5 6 7 8 9
+// c o a l s i _ _ _ _
+
+int fitness(Individuo a){
+  int coca = a.v[0]*1000 + a.v[1]*100 + a.v[0]*10 + a.v[2];
+  int cola = a.v[0]*1000 + a.v[1]*100 + a.v[3]*10 + a.v[2];
+  int oasis = a.v[1]*10000 + a.v[2]*1000 + a.v[4]*100 + a.v[5]*10 + a.v[4];
+  return abs(coca+cola-oasis);
+}
+
+int fitness(Individuo a){
+    int carry = 0;
+    int d1 = abs(a.v[2] + a.v[2] + carry); carry = d1/10; d1 %= 10;
+    int d2 = abs(a.v[0] + a.v[3] + carry); carry = d2/10; d2 %= 10;
+    int d3 = abs(a.v[1] + a.v[1] + carry); carry = d3/10; d3 %= 10;
+    int d4 = abs(a.v[0] + a.v[0] + carry); carry = d4/10; d4 %= 10;
+    int d5 = carry;
+
+    return abs(a.v[1]-d5) + abs(a.v[2]-d4) + abs(a.v[4]-d3) + abs(a.v[5]-d2) + abs(a.v[4]-d1);
+}
+
+
+---------------------------------------------------------------------------------------------------------
+5) DONALD+GERALD=ROBERT
+
+// 0 1 2 3 4 5 6 7 8 9
+// d o n a l g e r b t
+
+int fitness(Individuo a){
+  int donald = a.v[0]*100000 + a.v[1]*10000 + a.v[2]*1000 + a.v[3]*100 + a.v[4]*10 + a.v[0];
+  int gerald = a.v[5]*100000 + a.v[6]*10000 + a.v[7]*1000 + a.v[3]*100 + a.v[4]*10 + a.v[0];
+  int robert = a.v[7]*100000 + a.v[1]*10000 + a.v[8]*1000 + a.v[6]*100 + a.v[5]*10 + a.v[7];
+  return abs(donald+gerald-robert);
+}
+
+int fitness(Individuo a){
+    int carry = 0;
+    int d1 = abs(a.v[0] + a.v[0] + carry); carry = d1/10; d1 %= 10;
+    int d2 = abs(a.v[4] + a.v[4] + carry); carry = d2/10; d2 %= 10;
+    int d3 = abs(a.v[3] + a.v[3] + carry); carry = d3/10; d3 %= 10;
+    int d4 = abs(a.v[2] + a.v[7] + carry); carry = d4/10; d4 %= 10;
+    int d5 = abs(a.v[1] + a.v[6] + carry); carry = d5/10; d5 %= 10;
+    int d6 = abs(a.v[0] + a.v[5] + carry);
+
+    return abs(a.v[7]-d6) + abs(a.v[1]-d5) + abs(a.v[8]-d4) + abs(a.v[6]-d3) + abs(a.v[7]-d2) + abs(a.v[9]-d1);
+}
+
